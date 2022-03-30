@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{797A345F-6F9A-4CFC-B7D1-9EA7E9C7A4D2}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>rsa_deleteTempFiles</RootNamespace>
-    <AssemblyName>rsa_deleteTempFiles</AssemblyName>
+    <RootNamespace>DeleteTempDirectory</RootNamespace>
+    <AssemblyName>DeleteTempDirectory</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Speech" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />

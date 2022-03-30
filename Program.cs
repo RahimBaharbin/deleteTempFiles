@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Speech.Synthesis;
 
 namespace rsa_deleteTempFiles
 {
@@ -23,12 +24,12 @@ namespace rsa_deleteTempFiles
             try
             {
                 ShowWindow(GetConsoleWindow(), 0);
+               new Program().Speeck("Temp folder cleanup program was implemented");
                 new Thread(() => { new Program().DeleteFileFunction(); }) { Name = "ThreadDeleteFile", Priority = ThreadPriority.Highest, IsBackground = true }.Start();
                 Console.ReadLine();
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -81,6 +82,8 @@ namespace rsa_deleteTempFiles
                         }
                         continue;
                     }
+                    delegate_DeleteDirectory d = new delegate_DeleteDirectory(DeleteDirectoryFunction);
+                    var res = d.BeginInvoke(null, null);
                     Thread.Sleep(1000);
                 }
 
@@ -90,6 +93,51 @@ namespace rsa_deleteTempFiles
                 goto Again;
             }
         }
-       
+        static readonly object _object = new object();
+        public delegate void delegate_DeleteDirectory();
+        private void DeleteDirectoryFunction() {
+            lock (_object)
+            {
+                try
+                {
+                    string[] _pathFiles = Directory.GetDirectories(Path.GetTempPath(), "*", SearchOption.TopDirectoryOnly);
+                    foreach (string path in _pathFiles)
+                    {
+                        try
+                        {
+                            Directory.Delete(path, true);
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                    }
+                }
+                catch
+                {}
+            }
+        }
+        private void Speeck(string Message)
+        {
+            try
+            {
+                new Thread(() => {
+                    SpeechSynthesizer SpeeckMessage = new SpeechSynthesizer() { Volume = 60, Rate = 1 };
+                    SpeeckMessage.SetOutputToDefaultAudioDevice();
+                    SpeeckMessage.SelectVoiceByHints(VoiceGender.Male, VoiceAge.Senior);
+                    PromptBuilder builder = new PromptBuilder();
+                    builder.AppendText(Message);
+                    SpeeckMessage.SpeakAsync(builder);
+                })
+                {
+                    Name = "Speeck " + Thread.CurrentThread.ManagedThreadId.ToString(),
+                    Priority = ThreadPriority.Highest
+                }.Start();
+
+            }
+            catch 
+            {
+            }
+        }
     }
 }
